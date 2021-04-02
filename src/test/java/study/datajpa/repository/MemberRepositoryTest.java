@@ -10,6 +10,7 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,4 +121,37 @@ class MemberRepositoryTest {
         }
     }
 
+    @Test
+    public void findByNames(){
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> result = memberRepository.findByNames(Arrays.asList("AAA","BBB"));
+        for(Member member : result){
+            System.out.println("member = " + member);
+        }
+    }
+
+    //스프링 데이터 JPA 는 유연한 반환 타입을 지원한다.
+    @Test
+    public void returnType(){
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        //List는 결과가 없더라도 null이 아니다. (aaa1.size() = 0)
+        List<Member> aaa1 = memberRepository.findListByUsername("AAA");
+        //single result는 결과가 없으면 null이다.
+        //spring data jpa는 결과가 없다면 null값을 반환한다.
+        Member findMember = memberRepository.findMemberByUsername("AAA");
+
+        //Optional을 사용하면 데이터가 있을지 없을지 모를 때 사용하기 좋다.
+        //Optional은 결과가 없으면 Optional.empty 이다.
+        Optional<Member> aaa2 = memberRepository.findOptionalByUsername("AAA");
+
+        //한 건만 조회하였는데 결과가 2개 이상이면 예외가 발생한다.  (NonUniqueResultException)
+    }
 }

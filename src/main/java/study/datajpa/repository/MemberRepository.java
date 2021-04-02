@@ -7,6 +7,7 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 //JpaRepository 인터페이스를 상속받음
 //MemberRepository 인터페이스를 사용할 경우
@@ -38,5 +39,17 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     List<MemberDto> findMemberDto();
 
 
+    //파라미터 바인딩 - 이름 기반
+    @Query("select m from Member m where m.username in :names")
+    List<Member> findByNames(@Param("names") List<String> names);
 
+
+    //스프링 데이터 JPA 는 유연한 반환 타입을 지원한다.
+    // - 메소드 이름만으로 쿼리 생성을 통한 다양한 반환 타입
+    //컬랙션
+    List<Member> findListByUsername(String username);
+    //단건
+    Member findMemberByUsername(String username);
+    //단건 Optional
+    Optional<Member> findOptionalByUsername(String username);
 }
